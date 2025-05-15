@@ -1,0 +1,49 @@
+# Arquivos compilados e binários
+*.exe
+*.out
+*.o
+*.obj
+*.dll
+*.so
+*.dylib
+app
+
+# Pastas de build comuns
+/build/
+/bin/
+/Debug/
+/Release/
+/x64/
+/x86/
+
+# VS Code
+.vscode/
+
+# Arquivos temporários do sistema
+*.log
+*.tmp
+*.temp
+
+# Arquivos de cache do compilador
+*.pch
+*.pdb
+*.idb
+
+# Arquivos de backup
+*~
+*.bak
+*.swp
+
+# Diretórios de dependências (se usar CMake)
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Arquivos gerados
+*.user
+*.userosscache
+*.suo
+*.opensdf
+*.sdf
+*.ipch

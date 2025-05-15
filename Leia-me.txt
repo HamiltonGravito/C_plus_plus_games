@@ -1,0 +1,7 @@
+# COMPILAR PROJETO (Adicione as bibliotecas necessárias)
+g++ Timber.cpp -o app \
+    -lsfml-graphics -lsfml-window -lsfml-system -lsfml-network -lsfml-audio
+
+# RODAR O PROJETO
+./app
+
