@@ -1,8 +1,8 @@
 // Diretiva Include adiciona um conteúdo de outro arquivo no projeto (biblioteca) antes da compilação (pré-processamento) O .hpp indica que se trata de um arquivo de cabeçalho
 #include <SFML/Graphics.hpp>
-
 // E um álias para a classe SFML e assim ela não se confunde com outras classes
 using namespace sf;
+#include <sstream>
 
 // Classe principal do jogo (aplicativo)
 int main()
@@ -64,7 +64,41 @@ int main()
     float cloud3Speed = 0.0f;
 
     Clock clock;
+
+    // Time bar
+    RectangleShape timeBar; //Desenha retangulos simples
+    float timeBarStartWidth = 400;
+    float timeBarHeight = 40;
+    timeBar.setSize(Vector2f(timeBarStartWidth, timeBarHeight));
+    timeBar.setFillColor(Color::Red);
+    timeBar.setPosition((1920 / 2) - timeBarStartWidth / 2, 980);
+    Time gameTimeTotal;
+    float timeRemaining = 6.0f;
+    float timeBarWidthPerSecond = timeBarStartWidth / timeRemaining;
+
+
     bool paused = true;
+    int score = 0;
+    Text messageText;
+    Text scoreText;
+    // Carrega uma fonte externa
+    Font font;
+    font.loadFromFile("fonts/KOMIKAP_.ttf");
+    // Adiciona propriedades aos Textos
+    messageText.setFont(font);
+    scoreText.setFont(font);
+    messageText.setString("Press Enter to Start!");
+    scoreText.setString("Score = 0");
+    messageText.setCharacterSize(75);
+    scoreText.setCharacterSize(100);
+    messageText.setFillColor(Color::White);
+    scoreText.setFillColor(Color::White);
+
+    //Posiciona os Textos
+    FloatRect textRect = messageText.getLocalBounds(); // Retangulo com coordenadas de ponto flutuante
+    messageText.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
+    messageText.setPosition(1920/ 2.0f, 1080 / 2.0f);
+    scoreText.setPosition(20, 20);
 
 	while (window.isOpen())
 	{
@@ -89,6 +123,8 @@ int main()
 		}
         if (Keyboard::isKeyPressed(Keyboard::Return)){
             paused = false;
+            score = 0;
+            timeRemaining = 6;
         }
 
 		/*
@@ -97,7 +133,18 @@ int main()
 		****************************************
 		*/
         if(!paused){
+            //Tratando a barra de tempo
             Time dt = clock.restart();
+            timeRemaining -= dt.asSeconds();
+            timeBar.setSize(Vector2f(timeBarWidthPerSecond * timeRemaining, timeBarHeight));
+
+            if(timeRemaining <= 0.0f){
+                paused = true;
+                messageText.setString("Out of time!!!");
+                FloatRect textRect = messageText.getLocalBounds();
+                messageText.setOrigin(textRect.left + textRect.width / 2.0f, textRect.top + textRect.height / 2.0f);
+                messageText.setPosition(1920/2.0f, 1080/2.0f);
+            }
             if (!beeActive){
                 srand((int) time(0));
                 beeSpeed = (rand() % 100) + 100;
@@ -163,6 +210,10 @@ int main()
                     cloud3Active = false;
                 }
             }
+
+            std::stringstream ss;
+            ss << "Score = " << score;
+            scoreText.setString(ss.str());
         }
 
 		/*
@@ -181,6 +232,11 @@ int main()
         window.draw(spriteCloud3);
         window.draw(spriteTree);
         window.draw(spriteBee);
+        window.draw(scoreText);
+        window.draw(timeBar);
+        if(paused){
+            window.draw(messageText);
+        }
 
 		// Alterna entre a superfície exibida anteriormente (cena anterior) e a recém-atualizada (buffer duplo)
 		window.display();
